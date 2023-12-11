@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"  lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGRBooks</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center">
+            <a class="navbar-brand" th:href="@{/}">NGRBooks</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="datamovies.html">Baza ebooków</a>
+                </li>
+            </ul>
+            <form class="d-flex mx-3" action="search.html" method="POST" role="search">
+                <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+        <div  class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/profile}">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Wyloguj</a></li>
+                </th:block>
+                <th:block th:if="${#authorization.expression('isAnonymous()')}">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/login}">Logowanie</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/register}">Rejestracja</a></li>
+                </th:block>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="main-body">
+        <div class="row gutters-sm mt-5">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img th:src="${userProfile.avatar}" alt="Admin" class="rounded-circle shadow-4" width="150">
+                            <h4 th:text="${nickname}"></h4>
+                            <div class="mt-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Nickname</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <p th:text="${nickname}"></p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Opis</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <p th:text="${userProfile.description}"></p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Data dołączenia</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary pb-4">
+                                <p th:text="${userProfile.joinDate}"></p>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-primary"  th:href="@{/edit}">Edytuj</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h5>Lista ocenionych książek</h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID książki</th>
+                    <th scope="col">Nazwa książki</th>
+                    <th scope="col">Czy ulubiony?</th>
+                    <th scope="col">Ilość gwiazdek</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">ID_książki</th>
+                    <td><a href="moviepage.php?id=ID_filmu">Nazwa_książki</a></td>
+                    <td>CzyUlubione</td>
+                    <td>IlośćGwiazdek</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
