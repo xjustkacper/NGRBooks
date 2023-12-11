@@ -78,5 +78,6 @@ public class UserService implements IUserService {
     public void createPasswordResetTokenForUser(User user, String token) {
         PasswordResetToken myToken = new PasswordResetToken(token, user);
         passwordTokenRepository.save(myToken);
+
     }
 }
