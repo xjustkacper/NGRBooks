@@ -4,6 +4,7 @@ import com.ngr.ngrbooks.user.User;
 import com.ngr.ngrbooks.user.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class PasswordResetController {
 
     private final UserService userService;
+    private final MailSender mailSender;
 
 
     @PostMapping("/resetPassword")

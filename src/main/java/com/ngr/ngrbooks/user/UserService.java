@@ -5,6 +5,7 @@ import com.ngr.ngrbooks.registration.RegistrationRequest;
 import com.ngr.ngrbooks.registration.token.VerificationToken;
 import com.ngr.ngrbooks.registration.token.VerificationTokenRepository;
 import com.ngr.ngrbooks.user.passwordReset.PasswordResetToken;
+import com.ngr.ngrbooks.user.passwordReset.PasswordResetTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository tokenRepository;
+    private final PasswordResetTokenRepository passwordTokenRepository;
 
     @Override
     public List<User> getUsers() {
