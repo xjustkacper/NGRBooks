@@ -30,6 +30,7 @@ public class PasswordResetController {
             mailSender.send(constructResetTokenEmail(getAppUrl(request), request.getLocale(), token, user));
             return new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale()));
 
+
         }
     }
 
