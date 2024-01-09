@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -47,4 +48,17 @@ private User theUser;
         mailSender.send(message);
 
     }
+    public void sendPasswordResetVerificationEmail(String url) throws MessagingException, UnsupportedEncodingException {
+        String subject = "Resetowanie hasła";
+        String senderName = "NGR Books";
+        String mailContent = "Witaj, " + theUser.getNickname() + " kliknij w link aby zresetować hasło: " + url;
+        MimeMessage message = mailSender.createMimeMessage();
+        var messageHelper = new MimeMessageHelper(message);
+        messageHelper.setFrom("ngrcompany21@gmail.com", senderName);
+        messageHelper.setTo(theUser.getEmail());
+        messageHelper.setSubject(subject);
+        messageHelper.setText(mailContent, true);
+        mailSender.send(message);
+    }
+
 }

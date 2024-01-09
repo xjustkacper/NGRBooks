@@ -1,5 +1,11 @@
 package com.ngr.ngrbooks.user.profile;
 
+import com.ngr.ngrbooks.books.Book;
+import com.ngr.ngrbooks.books.BookService;
+import com.ngr.ngrbooks.books.favorites.FavoritesService;
+import com.ngr.ngrbooks.books.rating.Rating;
+import com.ngr.ngrbooks.books.rating.RatingRepository;
+import com.ngr.ngrbooks.books.rating.RatingService;
 import com.ngr.ngrbooks.user.User;
 import com.ngr.ngrbooks.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -21,13 +28,31 @@ import java.util.Optional;
 public class UserProfileController {
     private final UserProfileRepository userProfileRepository;
     private final UserService userService;
+    private final FavoritesService favoritesService;
+    private final RatingRepository ratingRepository;
+    private final RatingService ratingService;
+    private final BookService bookService;
 
 
     @GetMapping("/profile")
     public String getUserProfile(Model model, Principal principal){
         addProfileToModel(model, principal);
+        User user = userService.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+        UserProfile userProfile = userProfileRepository.findByUserId(user.getId());
+
+        List<Book> books = bookService.getBooks();
+        List<Rating> ratings = ratingService.getRatings(userProfile);
+
+        model.addAttribute("books", books);
+        model.addAttribute("ratings", ratings);
+        model.addAttribute("userProfile", userProfile);
+        model.addAttribute("favoritesService", favoritesService);
+        model.addAttribute("ratingRepository", ratingRepository);
+
         return "profile";
     }
+
 
 
     @GetMapping("/edit")

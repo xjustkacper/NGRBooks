@@ -2,10 +2,9 @@ package com.ngr.ngrbooks.user;
 
 import com.ngr.ngrbooks.exception.UserAlreadyExistsException;
 import com.ngr.ngrbooks.registration.RegistrationRequest;
+import com.ngr.ngrbooks.registration.password.PasswordResetTokenService;
 import com.ngr.ngrbooks.registration.token.VerificationToken;
 import com.ngr.ngrbooks.registration.token.VerificationTokenRepository;
-import com.ngr.ngrbooks.user.passwordReset.PasswordResetToken;
-import com.ngr.ngrbooks.user.passwordReset.PasswordResetTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository tokenRepository;
-    private final PasswordResetTokenRepository passwordTokenRepository;
+    private final PasswordResetTokenService passwordResetTokenService;
 
     @Override
     public List<User> getUsers() {
@@ -77,9 +77,33 @@ public class UserService implements IUserService {
         return "Konto zostało aktywowane";
     }
 
-    public void createPasswordResetTokenForUser(User user, String token) {
-        PasswordResetToken myToken = new PasswordResetToken(token, user);
-        passwordTokenRepository.save(myToken);
-
+    @Override
+    public VerificationToken generateNewVerificationToken(String oldToken) {
+        VerificationToken verificationToken = tokenRepository.findByToken(oldToken);
+        var verificationTokenTime = new VerificationToken();
+        verificationToken.setToken(UUID.randomUUID().toString());
+        verificationToken.setExpirationTime(verificationTokenTime.getTokenExpirationTime());
+        return tokenRepository.save(verificationToken);
     }
+
+    public void changePassword(User theUser, String newPassword) {
+        theUser.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(theUser);
+    }
+
+    @Override
+    public String validatePasswordResetToken(String token) {
+        return passwordResetTokenService.validatePasswordResetToken(token);
+    }
+
+    @Override
+    public User findUserByPasswordToken(String token) {
+        return passwordResetTokenService.findUserByPasswordToken(token).get();
+    }
+
+    @Override
+    public void createPasswordResetTokenForUser(User user, String passwordResetToken) {
+        passwordResetTokenService.createPasswordResetTokenForUser(user, passwordResetToken);
+    }
+
 }
