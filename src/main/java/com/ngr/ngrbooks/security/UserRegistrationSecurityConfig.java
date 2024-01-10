@@ -25,7 +25,7 @@ public class UserRegistrationSecurityConfig {
         return http.cors()
                 .and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/register/**", "/", "/login/**", "/confirm/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/register")
+                .requestMatchers("/register/**", "/", "/login/**", "/confirm/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/register", "/password-reset-request", "/login/password-reset-request/**", "/books/**", "/search/**", "/books")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests()

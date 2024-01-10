@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html xmlns:th="https://www.thymeleaf.org" lang="pl">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NGRBooks</title>
-  <link rel="stylesheet" href="starss.css">
+  <link rel="stylesheet" th:href="@{/css/stars.css}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/730c223759.js" crossorigin="anonymous"></script>
 
 </head>
+<body>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
@@ -18,11 +19,11 @@
       <a class="navbar-brand" th:href="@{/}">NGRBooks</a>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="datamovies.html">Baza ebooków</a>
+          <a class="nav-link" th:href="@{/books}">Baza ebooków</a>
         </li>
       </ul>
-      <form class="d-flex mx-3" action="search.html" method="POST" role="search">
-        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+      <form class="d-flex mx-3" th:action="@{/search}" method="get">
+        <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>
@@ -47,6 +48,10 @@
     <div class="card">
       <div class="card-body">
         <div class="row gutters-sm mt-5 justify-content-center">
+          <div class="col-sm-3">
+            <img th:src="${book.cover}" alt="Okładka książki" class="img-fluid" style="max-width: 300px; max-height: 350px;">
+          </div>
+
           <div class="col-md-8">
             <div class="card mb-3">
               <div class="card-body">
@@ -54,8 +59,7 @@
                   <div class="col-sm-3">
                     <h6 class="mb-0">Tytuł:</h6>
                   </div>
-                  <div class="col-sm-9 text-secondary">
-                    Tytuł książki
+                  <div class="col-sm-9 text-secondary" th:text="${book.title}">
                   </div>
                 </div>
                 <hr>
@@ -63,8 +67,7 @@
                   <div class="col-sm-3">
                     <h6 class="mb-0">Kategoria:</h6>
                   </div>
-                  <div class="col-sm-9 text-secondary">
-                    Kategoria książki
+                  <div class="col-sm-9 text-secondary" th:text="${book.genre}">
                   </div>
                 </div>
                 <hr>
@@ -72,8 +75,8 @@
                   <div class="col-sm-3">
                     <h6 class="mb-0">Opis:</h6>
                   </div>
-                  <div class="col-sm-9 text-secondary">
-                    Opis książki
+                  <div class="col-sm-9 text-secondary" th:text="${book.description}">
+
                   </div>
                 </div>
                 <hr>
@@ -81,8 +84,8 @@
                   <div class="col-sm-3">
                     <h6 class="mb-0">Autor:</h6>
                   </div>
-                  <div class="col-sm-9 text-secondary">
-                    Autor
+                  <div class="col-sm-9 text-secondary" th:text="${book.author}">
+
                   </div>
                 </div>
                 <hr>
@@ -90,8 +93,7 @@
                   <div class="col-sm-3">
                     <h6 class="mb-0">Rok wydania:</h6>
                   </div>
-                  <div class="col-sm-9 text-secondary">
-                    Rok wydania książki
+                  <div class="col-sm-9 text-secondary" th:text="${book.releaseDate}">
                   </div>
                 </div>
                 <hr>
@@ -100,20 +102,32 @@
                     <h6 class="mb-0">Ocena:</h6>
                   </div>
                   <div class="col-sm-9 text-secondary">
-                    <form id="rating-form" action="moviepage.php?id=ID_FILMU" method="POST">
-                      <input type="hidden" id="rating-input" name="rating" value="0">
+                    <form id="rating-form" th:action="@{/books/{id}/addRating(id=${book.id})}" method="POST">
+                      <input type="hidden" id="rating-input" name="rating" th:value="${rating?.rating}">
                       <div class="rating">
                         <span class="rating__star" data-value="1">&#9734;</span>
                         <span class="rating__star" data-value="2">&#9734;</span>
                         <span class="rating__star" data-value="3">&#9734;</span>
                         <span class="rating__star" data-value="4">&#9734;</span>
                         <span class="rating__star" data-value="5">&#9734;</span>
-                        <span id="star-count">0</span>
+                        <span id="star-count" th:text="${rating?.rating}"></span>
                       </div>
                     </form>
                   </div>
                 </div>
               </div>
+            </div>
+            <div th:if="${isFavourite}">
+              <form th:action="@{/books/{id}/favourite(id=${book.id})}" method="POST">
+                <input type="hidden" name="add" value="false">
+                <button type="submit" class="btn btn-warning">Usuń z ulubionych</button>
+              </form>
+            </div>
+            <div th:if="${!isFavourite}">
+              <form th:action="@{/books/{id}/favourite(id=${book.id})}" method="POST">
+                <input type="hidden" name="add" value="true">
+                <button type="submit" class="btn btn-warning">Dodaj do ulubionych</button>
+              </form>
             </div>
           </div>
         </div>
@@ -129,9 +143,9 @@
           <div class="d-flex flex-start w-100">
             <div class="w-100">
               <h5>Dodaj komentarz</h5>
-              <form method="post" action="moviepage.php?id=ID_FILMU">
+              <form method="post" th:action="@{/books/{id}/addComment(id=${book.id})}">
                 <div class="form-outline">
-                  <textarea class="form-control" id="textAreaExample" rows="4" name="comment"></textarea>
+                  <textarea class="form-control" id="content" rows="4" name="content"></textarea>
                 </div>
                 <div class="d-flex justify-content-between mt-3">
                   <button type="submit" class="btn btn-danger">
@@ -148,22 +162,22 @@
 </div>
 <div class="container">
   <div class="row mb-2 justify-content-center">
-    <div class="col-sm-6">
-      <div class="card">
+    <div class="col-12 d-flex justify-content-center" th:each="comment : ${comments}">
+      <div class="card" style="min-width: 600px;">
         <div class="card-body">
           <div class="row">
             <div class="col-sm-2">
-              <img class="rounded-circle shadow-1-strong me-3" src="ŚcieżkaDoObrazka" alt="avatar" width="65" height="65" />
+              <img class="rounded-circle shadow-1-strong me-3" th:src="${comment.userProfile.avatar}" alt="avatar" width="65" height="65" />
             </div>
-            <div class="col my-3">
-              NazwaUżytkownika
+            <div class="col my-3" th:text="${comment.userProfile.user.nickname}">
+
             </div>
           </div>
           <div class="row mt-3 justify-content-center">
             <div class="col-sm-9">
               <div class="card">
-                <div class="card-body">
-                  Treść komentarza
+                <div class="card-body" th:text="${comment.content}">
+
                 </div>
               </div>
             </div>
@@ -173,6 +187,6 @@
     </div>
   </div>
 </div>
-<script src="rating.js"></script>
+<script th:src="@{/js/rating.js}"></script>
 </body>
 </html>

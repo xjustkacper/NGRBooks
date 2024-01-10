@@ -11,13 +11,14 @@
     </script>
 </head>
 <body>
+<body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <div class="d-flex align-items-center">
             <a class="navbar-brand" th:href="@{/}">NGRBooks</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="datamovies.html">Baza ebooków</a>
+                    <a class="nav-link" th:href="@{/books}">Baza ebooków</a>
                 </li>
             </ul>
             <form class="d-flex mx-3" action="search.html" method="POST" role="search">
@@ -105,11 +106,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">ID_książki</th>
-                    <td><a href="moviepage.php?id=ID_filmu">Nazwa_książki</a></td>
-                    <td>CzyUlubione</td>
-                    <td>IlośćGwiazdek</td>
+                <tr th:each="rating : ${ratings}">
+                    <th scope="row" th:text="${rating.book.id}">ID_książki</th>
+                    <td><a th:href="@{/books/{id}(id=${rating.book.id})}" th:text="${rating.book.title}">Nazwa_książki</a></td>
+                    <td th:text="${favoritesService.isFavourite(rating.book, userProfile) ? 'Tak' : 'Nie'}">CzyUlubione</td>
+                    <td th:text="${ratingRepository.findByBookAndUserProfile(rating.book, userProfile).rating}">IlośćGwiazdek</td>
                 </tr>
                 </tbody>
             </table>
