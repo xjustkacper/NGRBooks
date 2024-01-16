@@ -5,6 +5,8 @@ import com.ngr.ngrbooks.user.profile.UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FavoritesService {
@@ -29,5 +31,9 @@ public class FavoritesService {
 Favorites favorites = favoritesRepository.findByBookAndUser(book, userProfile);
         return favorites != null;
 
+    }
+
+    public List<Book> getFavorites(UserProfile userProfile) {
+        return favoritesRepository.findAllByUser(userProfile);
     }
 }

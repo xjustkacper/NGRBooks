@@ -26,7 +26,7 @@ public class BookService {
     }
 
     public List<Book> getBooksByCategory(String category) {
-        return bookRepository.findByGenreContainingIgnoreCase(category);
+        return bookRepository.findByGenreIgnoreCase(category);
     }
 
     public List<String> getCategories() {

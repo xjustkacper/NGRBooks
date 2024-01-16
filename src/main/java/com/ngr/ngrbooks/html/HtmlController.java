@@ -1,5 +1,6 @@
 package com.ngr.ngrbooks.html;
 
+import com.ngr.ngrbooks.books.Book;
 import com.ngr.ngrbooks.books.rating.Rating;
 import com.ngr.ngrbooks.books.rating.RatingService;
 import com.ngr.ngrbooks.registration.password.PasswordRequestUtil;
@@ -19,9 +20,8 @@ public class HtmlController {
 
     @GetMapping(value = {"/", "/login.html"})
     public String index(Model model){
-        List<Rating> top10BooksByRating = ratingService.getAverageRatingPerBook();
-        model.addAttribute("top10BooksByRating", top10BooksByRating);
-
+        List<Book> top10Books = ratingService.getTop10Books();
+        model.addAttribute("top10Books", top10Books);
         return "index";
     }
 
