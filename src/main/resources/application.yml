@@ -1,6 +1,10 @@
 server:
   port: 9191
 spring:
+  thymeleaf:
+    encoding: UTF-8
+  messages:
+    encoding: UTF-8
   datasource:
     url: jdbc:mysql://localhost:3306/registration_db
     username: root

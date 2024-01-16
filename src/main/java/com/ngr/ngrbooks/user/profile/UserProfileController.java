@@ -1,5 +1,6 @@
 package com.ngr.ngrbooks.user.profile;
 
+import com.lowagie.text.DocumentException;
 import com.ngr.ngrbooks.books.Book;
 import com.ngr.ngrbooks.books.BookService;
 import com.ngr.ngrbooks.books.favorites.FavoritesService;
@@ -8,6 +9,8 @@ import com.ngr.ngrbooks.books.rating.RatingRepository;
 import com.ngr.ngrbooks.books.rating.RatingService;
 import com.ngr.ngrbooks.user.User;
 import com.ngr.ngrbooks.user.UserService;
+import com.ngr.ngrbooks.user.profile.pdf.PdfExporter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +22,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+import java.io.IOException;
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,6 +86,32 @@ public class UserProfileController {
             model.addAttribute("userProfile", userProfile);
         }
         return "redirect:/profile";
+    }
+
+
+    @GetMapping("/profile/pdf")
+    public void exportToPdf(HttpServletResponse response, Principal principal) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=profile_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        Optional<User> userOptional = userService.findByEmail(principal.getName());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            UserProfile userProfile = userProfileRepository.findByUserId(user.getId());
+
+            List<Book> books = favoritesService.getFavorites(userProfile);
+
+
+            PdfExporter exporter = new PdfExporter(books);
+
+            exporter.export(response);
+        }
     }
 
     private void addProfileToModel(Model model, Principal principal) {

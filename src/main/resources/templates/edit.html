@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" lang="pl">
+<html xmlns:th="https://www.thymeleaf.org" lang="pl" data-bs-theme="auto">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NGRVideo</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </head>
-<body>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -17,28 +15,86 @@
             <a class="navbar-brand" th:href="@{/}">NGRBooks</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/books}">Baza ebooków</a>
+                    <a class="nav-link" th:href="@{/books}" th:text="#{baza}"></a>
                 </li>
             </ul>
             <form class="d-flex mx-3" th:action="@{/search}" method="get">
-                <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <input class="form-control me-2" type="search" name="keyword" th:placeholder="#{szukaj}" th:label="#{szukaj}">
+                <button class="btn btn-outline-success" type="submit" th:text="#{szukaj}"></button>
             </form>
         </div>
         <div  class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
 
                 <th:block th:if="${#authorization.expression('isAuthenticated()')}">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/profile}">Profil</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Wyloguj</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/profile}" th:text="#{profil}"></a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/logout}" th:text="#{wyloguj}"></a></li>
                 </th:block>
                 <th:block th:if="${#authorization.expression('isAnonymous()')}">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/login}">Logowanie</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/register}">Rejestracja</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/login}" th:text="#{logowanie}"></a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/register}" th:text="#{rejestracja}"></a></li>
                 </th:block>
             </ul>
-
         </div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center dropdown color-modes">
+                <button class="btn btn-link px-0 text-decoration-none dropdown-toggle d-flex align-items-center"
+                        id="bd-theme"
+                        type="button"
+                        aria-expanded="false"
+                        data-bs-toggle="dropdown"
+                        data-bs-display="static">
+                    <span class="ms-2" id="bd-theme-text">🌗</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme" style="--bs-dropdown-min-width: 8rem;">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light">
+                            <span class="bi me-2 opacity-50 theme-icon">☀️</span>
+                            <span class="bi ms-auto d-none">✔️</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark">
+                            <span class="bi me-2 opacity-50 theme-icon">🌙</span>
+                            <span class="bi ms-auto d-none">✔️</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto">
+                            <span class="bi me-2 opacity-50 theme-icon">🌗</span>
+                            <span class="bi ms-auto d-none">✔️</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center dropdown color-modes">
+                <button class="btn btn-link px-0 text-decoration-none dropdown-toggle d-flex align-items-center"
+                        id="bd-lang"
+                        type="button"
+                        aria-expanded="false"
+                        data-bs-toggle="dropdown"
+                        data-bs-display="static">
+                    <span class="ms-2" id="bd-lang-text">🌐</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-lang" style="--bs-dropdown-min-width: 8rem;">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-lang-value="pl">
+                            <span class="bi me-2 opacity-50 theme-icon">🇵🇱️</span>
+                            <span class="bi ms-auto d-none" aria-pressed="false">✔️</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-lang-value="en">
+                            <span class="bi me-2 opacity-50 theme-icon">🇬🇧</span>
+                            <span class="bi ms-auto d-none" aria-pressed="false">✔️</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
     </div>
 </nav>
 <div class="container">
@@ -61,13 +117,13 @@
                                         <input id="avatar" required type="text" name="avatar" class="form-control" autocomplete="off" th:field="*{avatar}">
                                     </div>
                                     <div class="form-group">
-                                        <label for="description">Opis</label>
+                                        <label for="description" th:text="#{opis}"></label>
                                         <input id="description" required type="text" name="description" class="form-control" th:value="${userProfile.description}" th:field="*{description}">
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-3"></div>
                                         <div class="col-sm-9 text-secondary">
-                                            <input type="submit" class="btn btn-primary px-4" value="Zapisz zmiany">
+                                            <input type="submit" class="btn btn-primary px-4" th:value="#{zapisz}">
                                         </div>
                                     </div>
                                 </form>
@@ -79,5 +135,7 @@
         </div>
     </div>
 </div>
+<script th:src="@{/js/darkmode.js}"></script>
+<script th:src="@{/js/languages.js}"></script>
 </body>
 </html>

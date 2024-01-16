@@ -13,6 +13,7 @@ import com.ngr.ngrbooks.user.UserService;
 import com.ngr.ngrbooks.user.profile.UserProfile;
 import com.ngr.ngrbooks.user.profile.UserProfileController;
 import com.ngr.ngrbooks.user.profile.UserProfileRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
@@ -38,26 +40,35 @@ public class BookController {
     private final FavoritesService favoritesService;
 
     @GetMapping("/books/{id}")
-    public String getBookById(@PathVariable Long id, Model model, Principal principal){
+    public String getBookById(@PathVariable Long id, Model model, Principal principal) {
         Book book = bookService.getBookById(id);
-        User user = userService.findByEmail(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
-        UserProfile userProfile = userProfileRepository.findByUserId(user.getId());
-        if(book != null){
+
+        if (book != null) {
             model.addAttribute("book", book);
             List<Comment> comments = commentService.getCommentsByBookId(id);
-            Rating rating = ratingRepository.findByBookAndUserProfile(book, userProfile);
-            model.addAttribute("rating", rating);
+
+            if (principal != null) {
+                User user = userService.findByEmail(principal.getName())
+                        .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+                UserProfile userProfile = userProfileRepository.findByUserId(user.getId());
+                model.addAttribute("userProfile", userProfile);
+
+                Rating rating = ratingRepository.findByBookAndUserProfile(book, userProfile);
+                model.addAttribute("rating", rating);
+
+                boolean isFavourite = favoritesService.isFavourite(book, userProfile);
+                model.addAttribute("isFavourite", isFavourite);
+            }
+
             model.addAttribute("comments", comments);
             model.addAttribute("comment", new Comment());
-            boolean isFavourite = favoritesService.isFavourite(book, userProfile);
-            model.addAttribute("isFavourite", isFavourite);
+
             return "bookpage";
-        }
-        else {
+        } else {
             return "redirect:/books";
         }
     }
+
 
     @PostMapping("/books/{id}/favourite")
     public String handleFavourite(@PathVariable Long id, @RequestParam boolean add, Principal principal){
@@ -93,6 +104,19 @@ public class BookController {
         return "redirect:/books/" + id;
     }
 
+    @GetMapping("/books/{id}/read")
+    public void readBook(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        Book book = bookService.getBookById(id);
+        if (book != null) {
+            String downloadLink = book.getPdf();
+            if (downloadLink != null) {
+                response.sendRedirect(downloadLink);
+                return;
+            }
+        }
+        response.sendRedirect("/books");
+    }
+
     @PostMapping("/books/{id}/addRating")
     @ResponseBody
     public String addRating(@PathVariable Long id, @RequestParam int rating, Principal principal){
@@ -120,12 +144,12 @@ public class BookController {
     public String searchBooks(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
         List<Book> searchResults;
         if (keyword != null && !keyword.isEmpty()) {
-            searchResults = bookService.searchByKeyword(keyword); // Szukaj książek po kluczowym słowie
+            searchResults = bookService.searchByKeyword(keyword);
         } else {
             searchResults = Collections.emptyList();
         }
 
-        model.addAttribute("searchResults", searchResults); // Przekazanie wyników wyszukiwania do widoku
+        model.addAttribute("searchResults", searchResults);
         return "search";
     }
 
