@@ -3,9 +3,13 @@
 
 Pliki do pobrania:
 Liberica 17 SDK - https://bell-sw.com/pages/downloads/
+
 MySQL Workbench - https://dev.mysql.com/downloads/workbench/
+
 MySQL Community Server - https://dev.mysql.com/downloads/mysql/
+
 Przeglądarka internetowa - https://www.mozilla.org/en-US/firefox/new/
+
 IDE  - https://www.jetbrains.com/idea/download/?section=windows
 
 Krok 1: Instalacja potrzebnego oprogramowania wymienionego w “Pliki do pobrania” zgodnie z instrukcjami.
