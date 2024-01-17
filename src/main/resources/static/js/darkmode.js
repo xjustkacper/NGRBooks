@@ -1,4 +1,4 @@
-// Twój kod JavaScript
+
 (() => {
     'use strict'
 
