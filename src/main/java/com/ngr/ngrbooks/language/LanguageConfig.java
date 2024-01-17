@@ -11,10 +11,17 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
+/**
+ * Konfiguracja obsługi języków w aplikacji Spring MVC.
+ */
 @Configuration
 public class LanguageConfig implements WebMvcConfigurer {
 
-
+    /**
+     * Konfiguracja resolvera lokalizacji sesji.
+     *
+     * @return Obiekt LocaleResolver.
+     */
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver localeResolver = new SessionLocaleResolver();
@@ -22,15 +29,25 @@ public class LanguageConfig implements WebMvcConfigurer {
         return localeResolver;
     }
 
+    /**
+     * Interceptor zmiany lokalizacji.
+     *
+     * @return Obiekt LocaleChangeInterceptor.
+     */
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");
         return lci;
     }
+
+    /**
+     * Dodanie interceptora do rejestru interceptorów.
+     *
+     * @param registry Rejestr interceptorów.
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
-
 }

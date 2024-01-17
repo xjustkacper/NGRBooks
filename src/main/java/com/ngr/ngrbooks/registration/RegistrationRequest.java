@@ -1,7 +1,9 @@
 package com.ngr.ngrbooks.registration;
 
-import org.hibernate.annotations.NaturalId;
 
+/**
+ * Klasa reprezentująca żądanie rejestracji użytkownika.
+ */
 public record RegistrationRequest(
         String nickname,
         String email,

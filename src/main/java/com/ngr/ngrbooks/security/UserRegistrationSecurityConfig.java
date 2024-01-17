@@ -9,23 +9,40 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
+/**
+ * Konfiguracja bezpieczeństwa dla rejestracji użytkowników.
+ */
 @Configuration
 @EnableWebSecurity
 public class UserRegistrationSecurityConfig {
+
+    /**
+     * Bean dostarczający encoder do hasła.
+     *
+     * @return BCryptPasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Konfiguracja łańcucha filtrów bezpieczeństwa.
+     *
+     * @param http Obiekt HttpSecurity do konfiguracji.
+     * @return SecurityFilterChain
+     * @throws Exception Wyjątek rzucany w przypadku problemów z konfiguracją.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
         requestCache.setMatchingRequestParameterName(null);
         http.requestCache((cache) -> cache.requestCache(requestCache));
+
         return http.cors()
                 .and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/register/**", "/", "/login/**", "/confirm/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/register", "/password-reset-request", "/login/password-reset-request/**", "/books/{id}", "/search/**", "/books", "/books/{id}/read" )
+                .requestMatchers("/register/**", "/", "/login/**", "/confirm/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/register", "/password-reset-request", "/login/password-reset-request/**", "/books/{id}", "/search/**", "/books", "/books/{id}/read")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests()
@@ -46,6 +63,4 @@ public class UserRegistrationSecurityConfig {
                 .and()
                 .build();
     }
-
-
 }

@@ -11,21 +11,30 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Klasa implementująca interfejs UserDetails, reprezentująca szczegóły zarejestrowanego użytkownika w kontekście bezpieczeństwa.
+ */
 @Data
 public class UserRegistrationDetails implements UserDetails {
 
-    private String userName;
-    private String password;
-    private boolean isEnabled;
-    private List<GrantedAuthority> authorities;
+    private String userName;                    // Nazwa użytkownika (adres e-mail).
+    private String password;                    // Hasło użytkownika.
+    private boolean isEnabled;                  // Informacja o tym, czy konto użytkownika jest aktywne.
+    private List<GrantedAuthority> authorities; // Lista uprawnień użytkownika.
 
-
+    /**
+     * Konstruktor klasy.
+     *
+     * @param user Obiekt User reprezentujący użytkownika.
+     */
     public UserRegistrationDetails(User user) {
         this.userName = user.getEmail();
         this.password = user.getPassword();
         this.isEnabled = user.isEnabled();
+
+        // Konwersja ciągu znaków z uprawnieniami na listę obiektów GrantedAuthority.
         this.authorities = Arrays.stream(user.getRole()
-                .split(","))
+                        .split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
