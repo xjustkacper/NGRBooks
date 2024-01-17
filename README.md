@@ -12,6 +12,8 @@ Przeglądarka internetowa - https://www.mozilla.org/en-US/firefox/new/
 
 IDE  - https://www.jetbrains.com/idea/download/?section=windows
 
+
+
 Krok 1: Instalacja potrzebnego oprogramowania wymienionego w “Pliki do pobrania” zgodnie z instrukcjami.
 
 Krok 2: Uruchomienie MySQL Workbench i utworzenie nowej bazy danych poprzez przycisk “+” na stronie głównej. Connection name wpisać dowolnie, a resztę pozostawić domyślnie.
